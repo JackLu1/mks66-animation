@@ -1,4 +1,5 @@
 import mdl
+import sys
 from display import *
 from matrix import *
 from draw import *
@@ -20,8 +21,32 @@ from draw import *
   ==================== """
 def first_pass( commands ):
 
-    name = ''
+    name = 'base'
     num_frames = 1
+
+    frames_exist = 0
+    vary_exist = 0
+    base_exist = 0
+
+    for command in commands:
+        #print command
+        c = command['op']
+        args = command['args']
+        if c == 'frames':
+            num_frames = int(args[0])
+            frames_exist = 1
+        elif c == 'basename':
+            name = args[0]
+            base_exist = 1
+        elif c == 'vary':
+            vary_exist = 1
+
+    if frames_exist == 0 and vary_exist == 1:
+        print 'vary found but not frame, exiting'
+        sys.exit()
+    if frames_exist == 1 and base_exist == 0:
+        print 'use default basename "base"'
+
 
     return (name, num_frames)
 
@@ -97,7 +122,7 @@ def run(filename):
     coords1 = []
 
     for command in commands:
-        print command
+        #print command
         c = command['op']
         args = command['args']
         knob_value = 1
