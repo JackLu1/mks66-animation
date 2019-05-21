@@ -47,7 +47,6 @@ def first_pass( commands ):
     if frames_exist == 1 and base_exist == 0:
         print 'use default basename "base"'
 
-
     return (name, num_frames)
 
 """======== second_pass( commands ) ==========
@@ -69,6 +68,14 @@ def first_pass( commands ):
   ===================="""
 def second_pass( commands, num_frames ):
     frames = [ {} for i in range(num_frames) ]
+    # print frames
+    for command in commands:
+        if command['op'] == 'vary':
+            start = int( command['args'][0] )
+            end = int( command['args'][1] ) + 1
+            for frame in range( start, end ):
+                print frame
+            print
 
     return frames
 
@@ -106,6 +113,7 @@ def run(filename):
     reflect = '.white'
 
     (name, num_frames) = first_pass(commands)
+    print name, num_frames
     frames = second_pass(commands, num_frames)
 
 
