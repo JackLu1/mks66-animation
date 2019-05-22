@@ -67,15 +67,22 @@ def first_pass( commands ):
   appropirate value.
   ===================="""
 def second_pass( commands, num_frames ):
-    frames = [ {} for i in range(num_frames) ]
+    frames = [ {} for i in range(num_frames + 1) ]
     # print frames
     for command in commands:
         if command['op'] == 'vary':
-            start = int( command['args'][0] )
-            end = int( command['args'][1] ) + 1
-            for frame in range( start, end ):
-                print frame
-            print
+            start_frame = int( command['args'][0] )
+            end_frame = int( command['args'][1] )
+
+            start_value = command['args'][2]
+            end_value = command['args'][3]
+            delta = (end_value - start_value) / ( end_frame - start_frame )
+
+            for i in range( end_frame - start_frame + 1):
+                frames[start_frame + i][command['knob']] = start_value + delta * i
+
+    for i in frames:
+        print i
 
     return frames
 
