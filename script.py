@@ -80,11 +80,9 @@ def second_pass( commands, num_frames ):
 
             for i in range( end_frame - start_frame + 1):
                 frames[start_frame + i][command['knob']] = start_value + delta * i
-
-    for i in range(len(frames)):
-        print i
-        print frames[i]
-
+    # for i in range(len(frames)):
+    #     print i
+    #     print frames[i]
     return frames
 
 
@@ -121,7 +119,6 @@ def run(filename):
     reflect = '.white'
 
     (name, num_frames) = first_pass(commands)
-    print name, num_frames
     frames = second_pass(commands, num_frames)
 
 
@@ -138,7 +135,7 @@ def run(filename):
     coords1 = []
 
     for command in commands:
-        #print command
+        print command
         c = command['op']
         args = command['args']
         knob_value = 1
