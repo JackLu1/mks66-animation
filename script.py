@@ -120,6 +120,7 @@ def run(filename):
 
     (name, num_frames) = first_pass(commands)
     frames = second_pass(commands, num_frames)
+    print name
 
 
     tmp = new_matrix()
@@ -134,9 +135,11 @@ def run(filename):
     coords = []
     coords1 = []
 
+    count = 0
     for frame in frames:
+
         for command in commands:
-            # print command
+            print command
             c = command['op']
             args = command['args']
             knob_value = 1
@@ -177,15 +180,28 @@ def run(filename):
                 tmp = []
             elif c == 'move':
                 tmp = make_translate(args[0], args[1], args[2])
+
+                if command['knob'] != None:
+                    knob_value = frame[ command['knob'] ]
+                    k_scale = make_scale( knob_value, knob_value, knob_value)
+                    matrix_mult(tmp, k_scale)
+
                 matrix_mult(stack[-1], tmp)
                 stack[-1] = [x[:] for x in tmp]
                 tmp = []
             elif c == 'scale':
                 tmp = make_scale(args[0], args[1], args[2])
+
+                if command['knob'] != None:
+                    knob_value = frame[ command['knob'] ]
+                    k_scale = make_scale( knob_value, knob_value, knob_value)
+                    matrix_mult(tmp, k_scale)
+
                 matrix_mult(stack[-1], tmp)
                 stack[-1] = [x[:] for x in tmp]
                 tmp = []
             elif c == 'rotate':
+
                 theta = args[1] * (math.pi/180)
                 if args[0] == 'x':
                     tmp = make_rotX(theta)
@@ -193,6 +209,12 @@ def run(filename):
                     tmp = make_rotY(theta)
                 else:
                     tmp = make_rotZ(theta)
+
+                if command['knob'] != None:
+                    knob_value = frame[ command['knob'] ]
+                    k_scale = make_scale( knob_value, knob_value, knob_value)
+                    matrix_mult(tmp, k_scale)
+
                 matrix_mult( stack[-1], tmp )
                 stack[-1] = [ x[:] for x in tmp]
                 tmp = []
@@ -205,3 +227,10 @@ def run(filename):
             elif c == 'save':
                 save_extension(screen, args[0])
             # end operation loop
+        #make frame code here
+        print './anim/' + name + "%03d"%count
+        save_extension( screen, './anim/' + name + "%03d"%count)
+        count += 1
+
+        
+
