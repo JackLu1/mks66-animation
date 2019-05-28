@@ -190,7 +190,7 @@ def run(filename):
                 tmp = []
             elif c == 'scale':
                 args = [arg * knob_value for arg in args]
-                tmp = make_translate(args[0], args[1], args[2])
+                tmp = make_scale(args[0], args[1], args[2])
 
                 matrix_mult(stack[-1], tmp)
                 stack[-1] = [x[:] for x in tmp]
