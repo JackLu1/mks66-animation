@@ -59,6 +59,8 @@ def save_ppm( screen, fname ):
     f.write( ppm )
     f.close()
 
+# saves ppm, then pipes into png
+# remove save ppm step
 def save_extension( screen, fname ):
     ppm_name = fname[:fname.find('.')] + '.ppm'
     save_ppm( screen, ppm_name )
