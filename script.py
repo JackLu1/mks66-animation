@@ -137,12 +137,15 @@ def run(filename):
 
     count = 0
     for frame in frames:
-
+        # print frame
         for command in commands:
-            print command
+            # print command
             c = command['op']
             args = command['args']
             knob_value = 1
+            if 'knob' in command:
+                if command['knob'] != None and command['knob'] in frame:
+                    knob_value = frame[ command['knob'] ]
 
             if c == 'box':
                 if command['constants']:
@@ -179,41 +182,28 @@ def run(filename):
                 draw_lines(tmp, screen, zbuffer, color)
                 tmp = []
             elif c == 'move':
+                args = [arg * knob_value for arg in args]
                 tmp = make_translate(args[0], args[1], args[2])
-
-                if command['knob'] != None:
-                    knob_value = frame[ command['knob'] ]
-                    k_scale = make_scale( knob_value, knob_value, knob_value)
-                    matrix_mult(tmp, k_scale)
 
                 matrix_mult(stack[-1], tmp)
                 stack[-1] = [x[:] for x in tmp]
                 tmp = []
             elif c == 'scale':
-                tmp = make_scale(args[0], args[1], args[2])
-
-                if command['knob'] != None:
-                    knob_value = frame[ command['knob'] ]
-                    k_scale = make_scale( knob_value, knob_value, knob_value)
-                    matrix_mult(tmp, k_scale)
+                args = [arg * knob_value for arg in args]
+                tmp = make_translate(args[0], args[1], args[2])
 
                 matrix_mult(stack[-1], tmp)
                 stack[-1] = [x[:] for x in tmp]
                 tmp = []
             elif c == 'rotate':
 
-                theta = args[1] * (math.pi/180)
+                theta = args[1] * (math.pi/180) * knob_value
                 if args[0] == 'x':
                     tmp = make_rotX(theta)
                 elif args[0] == 'y':
                     tmp = make_rotY(theta)
                 else:
                     tmp = make_rotZ(theta)
-
-                if command['knob'] != None:
-                    knob_value = frame[ command['knob'] ]
-                    k_scale = make_scale( knob_value, knob_value, knob_value)
-                    matrix_mult(tmp, k_scale)
 
                 matrix_mult( stack[-1], tmp )
                 stack[-1] = [ x[:] for x in tmp]
@@ -227,10 +217,11 @@ def run(filename):
             elif c == 'save':
                 save_extension(screen, args[0])
             # end operation loop
-        #make frame code here
-        print './anim/' + name + "%03d"%count
         save_extension( screen, './anim/' + name + "%03d"%count)
         count += 1
-
-        
-
+        tmp = new_matrix()
+        ident( tmp )
+        stack = [ [x[:] for x in tmp] ]
+        screen = new_screen()
+        zbuffer = new_zbuffer()
+        tmp = []
