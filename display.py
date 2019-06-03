@@ -59,6 +59,8 @@ def save_ppm( screen, fname ):
     f.write( ppm )
     f.close()
 
+# saves ppm, then pipes into png
+# remove save ppm step
 def save_extension( screen, fname ):
     ppm_name = fname[:fname.find('.')] + '.ppm'
     save_ppm( screen, ppm_name )
@@ -68,10 +70,11 @@ def save_extension( screen, fname ):
 
 def display( screen ):
     ppm_name = 'pic.ppm'
-    save_ppm( screen, ppm_name )
+    ppm = save_ppm( screen, ppm_name )
     p = Popen( ['display', ppm_name], stdin=PIPE, stdout = PIPE )
+    # p = Popen( ['display', ppm], stdin=PIPE, stdout = PIPE )
     p.communicate()
-    remove(ppm_name)
+    # remove(ppm_name)
 
 def make_animation( name ):
     name_arg = 'anim/' + name + '*'
